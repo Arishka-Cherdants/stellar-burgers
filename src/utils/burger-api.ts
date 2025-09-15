@@ -25,10 +25,15 @@ export const refreshToken = (): Promise<TRefreshResponse> =>
       token: localStorage.getItem('refreshToken')
     })
   })
-    .then((res) => checkResponse<TRefreshResponse>(res))
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error('Refresh token failed');
+      }
+      return checkResponse<TRefreshResponse>(res);
+    })
     .then((refreshData) => {
       if (!refreshData.success) {
-        return Promise.reject(refreshData);
+        throw new Error('Refresh token failed');
       }
       localStorage.setItem('refreshToken', refreshData.refreshToken);
       setCookie('accessToken', refreshData.accessToken);
@@ -38,21 +43,37 @@ export const refreshToken = (): Promise<TRefreshResponse> =>
 export const fetchWithRefresh = async <T>(
   url: RequestInfo,
   options: RequestInit
-) => {
+): Promise<T> => {
   try {
     const res = await fetch(url, options);
     return await checkResponse<T>(res);
   } catch (err) {
-    if ((err as { message: string }).message === 'jwt expired') {
-      const refreshData = await refreshToken();
-      if (options.headers) {
-        (options.headers as { [key: string]: string }).authorization =
-          refreshData.accessToken;
+    const error = err as { message: string };
+
+    if (error.message === 'jwt expired' || (error as any).status === 401) {
+      try {
+        const refreshData = await refreshToken();
+
+        // Обновляем заголовки с новым токеном
+        const newOptions = {
+          ...options,
+          headers: {
+            ...options.headers,
+            Authorization: refreshData.accessToken
+          }
+        };
+
+        const res = await fetch(url, newOptions);
+        return await checkResponse<T>(res);
+      } catch (refreshError) {
+        // Если refresh тоже failed - очищаем токены и выбрасываем ошибку
+        localStorage.removeItem('refreshToken');
+        document.cookie =
+          'accessToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+        throw new Error('Authentication failed');
       }
-      const res = await fetch(url, options);
-      return await checkResponse<T>(res);
     } else {
-      return Promise.reject(err);
+      throw error;
     }
   }
 };
