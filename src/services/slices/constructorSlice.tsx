@@ -1,8 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { TConstructorIngredient, TIngredient } from '@utils-types';
-
-let counter = 0;
-export const generateId = (): string => `ingredient-${Date.now()}-${counter++}`;
+import { nanoid } from '@reduxjs/toolkit';
 
 type TConstructorSlice = {
   constructorBurger: {
@@ -36,7 +34,7 @@ export const constructorSlice = createSlice({
         }
       },
       prepare: (ingredient: TIngredient) => ({
-        payload: { ...ingredient, id: generateId() }
+        payload: { ...ingredient, id: nanoid() }
       })
     },
     removeIngredient: (

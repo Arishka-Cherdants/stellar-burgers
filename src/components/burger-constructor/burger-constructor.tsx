@@ -1,4 +1,4 @@
-import { FC, useMemo } from 'react';
+import { FC, useEffect, useMemo } from 'react';
 import { TConstructorIngredient } from '@utils-types';
 import { BurgerConstructorUI } from '@ui';
 
@@ -28,6 +28,12 @@ export const BurgerConstructor: FC = () => {
 
   const auntificated = useSelector(getIsAuthChecked);
 
+  useEffect(() => {
+    if (orderModalData && !orderRequest) {
+      dispatch(clearConstructor());
+    }
+  }, [orderModalData, orderRequest, dispatch]);
+
   const onOrderClick = () => {
     if (auntificated && !user) {
       navigate('/login');
@@ -46,7 +52,6 @@ export const BurgerConstructor: FC = () => {
   };
   const closeOrderModal = () => {
     navigate('/', { replace: true });
-    dispatch(clearConstructor());
     dispatch(clearOrder());
   };
 

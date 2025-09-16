@@ -181,6 +181,17 @@ export const userSlice = createSlice({
         state.error = '';
         state.user = null;
         state.isAuthChecked = false;
+      })
+      .addCase(userLogoutApi.rejected, (state, action) => {
+        state.preloaderLogin = false;
+        state.isAuthChecked = true;
+        state.error = action.error.message || 'Ошибка выхода';
+      })
+      .addCase(userLogoutApi.fulfilled, (state) => {
+        state.preloaderLogin = false;
+        state.isAuthChecked = true;
+        state.user = null;
+        state.error = '';
       });
   }
 });
