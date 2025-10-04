@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { TConstructorIngredient, TIngredient } from '@utils-types';
 import { nanoid } from '@reduxjs/toolkit';
 
-type TConstructorSlice = {
+export type TConstructorSlice = {
   constructorBurger: {
     bun: TConstructorIngredient | null;
     ingredients: TConstructorIngredient[];
@@ -86,3 +86,4 @@ export const {
 } = constructorSlice.actions;
 
 export const { getConstructorBurger } = constructorSlice.selectors;
+export default constructorSlice.reducer;

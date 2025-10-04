@@ -7,7 +7,7 @@ export const getIngredientsList = createAsyncThunk(
   async () => getIngredientsApi()
 );
 
-type TIngredientsSlice = {
+export type TIngredientsSlice = {
   ingredients: TIngredient[];
   preloader: boolean;
   error: string;
@@ -47,3 +47,4 @@ export const ingredientsSlice = createSlice({
 
 export const { getIngredientsItem, getIngredientsPreloader } =
   ingredientsSlice.selectors;
+export default ingredientsSlice.reducer;

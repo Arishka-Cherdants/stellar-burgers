@@ -50,15 +50,15 @@ export const userUpdateUserApi = createAsyncThunk(
 export const userLogoutApi = createAsyncThunk('ingredients/logoutApi', () => {
   logoutApi()
     .then(() => {
-      localStorage.clear(); // очищаем refreshToken
-      deleteCookie('accessToken'); // очищаем accessToken
+      localStorage.clear();
+      deleteCookie('accessToken');
     })
     .catch(() => {
       console.log('Ошибка выполнения выхода');
     });
 });
 
-type TUserSlice = {
+export type TUserSlice = {
   user: TUser | null;
   preloaderLogin: boolean;
   userOrders: TOrder[];
@@ -208,3 +208,4 @@ export const {
 } = userSlice.selectors;
 
 export const { errorCleaner } = userSlice.actions;
+export default userSlice.reducer;

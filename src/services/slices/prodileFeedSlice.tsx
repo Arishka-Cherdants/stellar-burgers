@@ -7,7 +7,7 @@ export const acyncGetProfileFeedsApi = createAsyncThunk(
   async (number: number) => getOrderByNumberApi(number)
 );
 
-type TProfileFeedSlice = {
+export type TProfileFeedSlice = {
   order: TOrder | null;
   preloaderOrder: boolean;
   error: string | null;
@@ -46,3 +46,4 @@ export const profileFeedSlice = createSlice({
 });
 
 export const { getOrder, getPreloaderOrder } = profileFeedSlice.selectors;
+export default profileFeedSlice.reducer;

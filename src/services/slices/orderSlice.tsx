@@ -7,7 +7,7 @@ export const getOrderBurgerApi = createAsyncThunk(
   async (data: string[]) => orderBurgerApi(data)
 );
 
-type TOrderSlice = {
+export type TOrderSlice = {
   order: TOrder | null;
   preloaderOrd: boolean;
   error: string;
@@ -51,3 +51,4 @@ export const orderSlice = createSlice({
 
 export const { clearOrder } = orderSlice.actions;
 export const { getOrderBurger, getPreloaderOrd } = orderSlice.selectors;
+export default orderSlice.reducer;

@@ -7,7 +7,7 @@ export const acyncGetFeedsApi = createAsyncThunk(
   async () => getFeedsApi()
 );
 
-type TFeedSlice = {
+export type TFeedSlice = {
   orders: TOrder[];
   preloaderFeeds: boolean;
   total: number;
@@ -55,3 +55,5 @@ export const feedSlice = createSlice({
 
 export const { getOrdersSlice, getPreloaderFeeds, getTotal, getTotalToday } =
   feedSlice.selectors;
+
+export default feedSlice.reducer;

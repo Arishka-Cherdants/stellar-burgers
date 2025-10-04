@@ -1,0 +1,9 @@
+{
+    "success": true,
+    "accessToken": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Yzg2Y2NjNjczMDg2MDAxYmE4ODY4MyIsImlhdCI6MTc1OTMyNzIwOCwiZXhwIjoxNzU5MzI4NDA4fQ.iHjDdl5AagoaODs0BQs8StFpzXRquG9nfSCxiZzcQyg",
+    "refreshToken": "a9c4aeedb08ecc231d6cccd3ff66ff5ede2cfda64d5e8d8097c58ede117e7efdfdcd055338a50239",
+    "user": {
+        "email": "vasiarabochi@list.ru",
+        "name": "Arishka"
+    }
+}
