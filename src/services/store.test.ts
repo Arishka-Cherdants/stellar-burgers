@@ -57,16 +57,23 @@ describe('тест проверка правильной инициализац�
     error: null
   };
 
+  const expectedInitialState = {
+    ingredients: ingredientsInitialState,
+    constructorBurger: сonstructorInitialState,
+    user: userInitialState,
+    order: orderInitialState,
+    feed: feedInitialState,
+    profileFeed: profileFeedInitialState
+  };
+
   const store = configureStore({
     reducer: rootReducer,
-    preloadedState: {
-      ingredients: ingredientsInitialState,
-      constructorBurger: сonstructorInitialState,
-      user: userInitialState,
-      order: orderInitialState,
-      feed: feedInitialState,
-      profileFeed: profileFeedInitialState
-    }
+    preloadedState: expectedInitialState
+  });
+
+  test('rootReducer возвращает корректное начальное состояние при UNKNOWN_ACTION', () => {
+    const initialState = rootReducer(undefined, { type: 'UNKNOWN_ACTION' });
+    expect(initialState).toEqual(expectedInitialState);
   });
 
   test('тест наличия в сторе всех слайсов', () => {
@@ -80,59 +87,97 @@ describe('тест проверка правильной инициализац�
     expect(storeState).toHaveProperty('profileFeed');
   });
 
-  test('тест инициализация слайсов с ожидаемыми initialStates', () => {
-    const state = store.getState();
-    expect(state.ingredients).toEqual(ingredientsInitialState);
-    expect(state.constructorBurger).toEqual(сonstructorInitialState);
-    expect(state.user).toEqual(userInitialState);
-    expect(state.order).toEqual(orderInitialState);
-    expect(state.feed).toEqual(feedInitialState);
-    expect(state.profileFeed).toEqual(profileFeedInitialState);
-  });
-
-  test('тест проверки возвращаемых данных редьюсером', () => {
-    const initialState = rootReducer(undefined, { type: '@@INIT' });
-    const newState = rootReducer(initialState, { type: 'UNKNOWN_ACTION' });
-    expect(newState).toEqual(initialState);
-  });
-
-  test('тест store экшенами для каждого слайса', () => {
-    expect(ingredientsReducer(undefined, { type: 'UNKNOWN_ACTION' })).toEqual(
-      ingredientsReducer(undefined, { type: '' })
+  test('тест ingredients', () => {
+    expect(store.getState().ingredients).toEqual(
+      ingredientsReducer(undefined, { type: 'UNKNOWN_ACTION' })
     );
 
-    expect(
+    const getIngredientsListAction = {
+      type: 'getIngredientsList'
+    };
+    store.dispatch(getIngredientsListAction);
+    expect(store.getState().ingredients).toEqual(ingredientsInitialState);
+  });
+
+  test('тест constructorBurger', () => {
+    expect(store.getState().constructorBurger).toEqual(
       constructorSliceReducer(undefined, { type: 'UNKNOWN_ACTION' })
-    ).toEqual(constructorSliceReducer(undefined, { type: '' }));
-
-    expect(userSliceReducer(undefined, { type: 'UNKNOWN_ACTION' })).toEqual(
-      userSliceReducer(undefined, { type: '' })
     );
-
-    expect(orderSliceReducer(undefined, { type: 'UNKNOWN_ACTION' })).toEqual(
-      orderSliceReducer(undefined, { type: '' })
-    );
-
-    expect(feedSliceReducer(undefined, { type: 'UNKNOWN_ACTION' })).toEqual(
-      feedSliceReducer(undefined, { type: '' })
-    );
-
-    expect(
-      profileFeedSliceReducer(undefined, { type: 'UNKNOWN_ACTION' })
-    ).toEqual(profileFeedSliceReducer(undefined, { type: '' }));
-  });
-  test('тест влияние несуществующих экшенов на изменение слайсов', () => {
     const testActions = [
-      { type: 'FIRST_ACTION' },
-      { type: 'SECOND_ACTION' },
-      { type: 'THIRD_ACTION' }
+      { type: 'addIngredient' },
+      { type: 'removeIngredient' },
+      { type: 'moveUp' },
+      { type: 'moveDown' },
+      { type: 'clearConstructor' }
     ];
 
     testActions.forEach((action) => {
       const state = store.getState();
       store.dispatch(action);
       const newState = store.getState();
-      expect(newState).toEqual(state);
+      expect(newState.constructorBurger).toEqual(сonstructorInitialState);
     });
+  });
+
+  test('тест user', () => {
+    expect(store.getState().user).toEqual(
+      userSliceReducer(undefined, { type: 'UNKNOWN_ACTION' })
+    );
+
+    const testActions = [
+      { type: 'userGetOrdersApi' },
+      { type: 'userRegisterUserApi' },
+      { type: 'userLoginUserApi' },
+      { type: 'userGetUserApi' },
+      { type: 'userUpdateUserApi' },
+      { type: 'userLogoutApi' },
+      { type: 'errorCleaner' }
+    ];
+
+    testActions.forEach((action) => {
+      const state = store.getState();
+      store.dispatch(action);
+      const newState = store.getState();
+      expect(newState.user).toEqual(userInitialState);
+    });
+  });
+
+  test('тест order', () => {
+    expect(store.getState().order).toEqual(
+      orderSliceReducer(undefined, { type: 'UNKNOWN_ACTION' })
+    );
+
+    const testActions = [{ type: 'clearOrder' }, { type: 'getOrderBurgerApi' }];
+
+    testActions.forEach((action) => {
+      const state = store.getState();
+      store.dispatch(action);
+      const newState = store.getState();
+      expect(newState.order).toEqual(orderInitialState);
+    });
+  });
+
+  test('тест feed', () => {
+    expect(store.getState().feed).toEqual(
+      feedSliceReducer(undefined, { type: 'UNKNOWN_ACTION' })
+    );
+
+    const acyncGetFeedsApiAction = {
+      type: 'acyncGetFeedsApi'
+    };
+    store.dispatch(acyncGetFeedsApiAction);
+    expect(store.getState().feed).toEqual(feedInitialState);
+  });
+
+  test('тест profileFeed', () => {
+    expect(store.getState().profileFeed).toEqual(
+      profileFeedSliceReducer(undefined, { type: 'UNKNOWN_ACTION' })
+    );
+
+    const acyncGetProfileFeedsApiAction = {
+      type: 'acyncGetProfileFeedsApi'
+    };
+    store.dispatch(acyncGetProfileFeedsApiAction);
+    expect(store.getState().profileFeed).toEqual(profileFeedInitialState);
   });
 });

@@ -4,12 +4,11 @@ import * as userData from '../fixtures/user.json';
 describe('cypress тесты для конструктора', () => {
   beforeEach(() => {
     cy.intercept('GET', 'api/ingredients', { fixture: 'ingredients.json' });
-    cy.visit('http://localhost:4000/');
+    cy.visit('/');
   });
 
   describe('тестирование загрузки ингредиентов', () => {
     it('тестированик сборки бургера', () => {
-      cy.request('api/ingredients');
       cy.get(`[data-cy=bun] > .common_button`).eq(0).click();
       cy.get(`[data-cy=main] > .common_button`).eq(1).click();
       cy.get(`[data-cy=main] > .common_button`).eq(4).click();
@@ -55,10 +54,40 @@ describe('cypress тесты для конструктора', () => {
   });
 
   describe('тестирование работы модальных окон', () => {
-    it('тестирование открытие модального окна ингредиента', () => {
+    it('тестирование открытие модального окна булочки', () => {
       cy.get(`[data-cy=bun]`).eq(0).click();
       cy.get('[data-cy=modal]').should('be.visible');
       cy.get('[data-cy=modal] h3').contains('Краторная булка N-200i');
+      cy.get('[data-cy=modal] [data-cy=ingredient-calories]').contains('420');
+      cy.get('[data-cy=modal] [data-cy=ingredient-proteins]').contains('80');
+      cy.get('[data-cy=modal] [data-cy=ingredient-fat]').contains('24');
+      cy.get('[data-cy=modal] [data-cy=ingredient-carbohydrates]').contains(
+        '53'
+      );
+    });
+    it('тестирование открытие модального окна начинки', () => {
+      cy.get(`[data-cy=main]`).eq(0).click();
+      cy.get('[data-cy=modal]').should('be.visible');
+      cy.get('[data-cy=modal] h3').contains(
+        'Биокотлета из марсианской Магнолии'
+      );
+      cy.get('[data-cy=modal] [data-cy=ingredient-calories]').contains('4242');
+      cy.get('[data-cy=modal] [data-cy=ingredient-proteins]').contains('420');
+      cy.get('[data-cy=modal] [data-cy=ingredient-fat]').contains('142');
+      cy.get('[data-cy=modal] [data-cy=ingredient-carbohydrates]').contains(
+        '242'
+      );
+    });
+    it('тестирование открытие модального окна соуса', () => {
+      cy.get(`[data-cy=sauce]`).eq(0).click();
+      cy.get('[data-cy=modal]').should('be.visible');
+      cy.get('[data-cy=modal] h3').contains('Соус Spicy-X');
+      cy.get('[data-cy=modal] [data-cy=ingredient-calories]').contains('30');
+      cy.get('[data-cy=modal] [data-cy=ingredient-proteins]').contains('30');
+      cy.get('[data-cy=modal] [data-cy=ingredient-fat]').contains('20');
+      cy.get('[data-cy=modal] [data-cy=ingredient-carbohydrates]').contains(
+        '40'
+      );
     });
     it('тестирование закрытие модального окна по клику на крестик', () => {
       cy.get(`[data-cy=bun]`).eq(0).click();
@@ -106,7 +135,7 @@ describe('cypress тесты для конструктора', () => {
       cy.get('[data-cy=selectMain]').contains('Выберите начинку');
       cy.get('[data-cy=selectBottomBun]').contains('Выберите булки');
     });
-     afterEach(() => {
+    afterEach(() => {
       cy.clearAllCookies();
       localStorage.removeItem('refreshToken');
     });
